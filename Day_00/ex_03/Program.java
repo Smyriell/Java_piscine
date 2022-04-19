@@ -6,42 +6,22 @@ public class Program {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String userData = scanner.nextLine();
-//        int grades = 0;
         int weekNumb = 1;
-        int minGrade;
-//        int gradeNumb = 5;
+        long allWeeksGrades = 0;
 
         while (!userData.equals("42") && weekNumb != 19) {
             if (userData.equals("Week " + weekNumb)) {
                 if (!scanner.hasNextInt())
                     PrintError("Error!\nGrades should be as numbers");
-                FindMinGrade(scanner);
-//                grades = scanner.nextInt();
-//                CheckGradeRange(grades);
-//                minGrade = grades;
-//                System.out.println("1 " + grades);// to do
-//                for (int i = 0; i < gradeNumb - 1; ++i) {
-//                    if (!scanner.hasNextInt())
-//                        PrintError("Error!\nGrades should be as numbers");
-//                    grades = scanner.nextInt();
-//                    CheckGradeRange(grades);
-//                    System.out.println((i + 2) + " " + grades); // to do
-//                    if (grades < minGrade)
-//                        minGrade = grades;
-//                }
-//                System.out.println("min " + minGrade);  // to do
+                allWeeksGrades += FindMinGrade(scanner, weekNumb);
                 weekNumb++;
-                System.out.println("Week nbr " + weekNumb); // to do
-//                if (scanner.hasNextInt())
-//                    PrintError("Error!\nMax number of grades: 5");
                 scanner.nextLine();
                 userData = scanner.nextLine();
-                System.out.println("In user  data " + userData);
             }
             else
-                 PrintError("theIllegalArgument");//  думай куда! еслине тот порядок недели
+                 PrintError("theIllegalArgument");
         }
-
+        PrintStatisticOfStudentProgres(allWeeksGrades, weekNumb);
     }
 
     public static void PrintError(String message)
@@ -56,7 +36,7 @@ public class Program {
             PrintError("Each test can be graded between 1 and 9");
     }
 
-    public static int FindMinGrade(Scanner scanner)
+    public static int FindMinGrade(Scanner scanner, int weekNumb)
     {
         int grades;
         int minGrade;
@@ -65,21 +45,33 @@ public class Program {
         grades = scanner.nextInt();
         CheckGradeRange(grades);
         minGrade = grades;
-        System.out.println("1 " + grades);// to do
-        for (int i = 0; i < gradeNumb - 1; ++i) {
+        for (int i = 1; i < gradeNumb; ++i) {
             if (!scanner.hasNextInt())
-                PrintError("Error!\nGrades should be as numbers");
+                PrintError("Error!\nThere should be five grades as numbers from 1 to 9");
             grades = scanner.nextInt();
             CheckGradeRange(grades);
-            System.out.println((i + 2) + " " + grades); // to do
             if (grades < minGrade)
                 minGrade = grades;
         }
-        System.out.println("min " + minGrade);  // to do
-        if (scanner.hasNextInt())
-            PrintError("Error!\nMax number of grades: 5");
+        for (int i = 1; i < weekNumb; ++i)
+            minGrade *= 10;
         return minGrade;
     }
 
+    public static void PrintStatisticOfStudentProgres(long sumGrades, int sumWeek)
+    {
+        long rest;
+
+        if (sumGrades == 0)
+            return;
+        for (int i = 1; i < sumWeek; ++i) {
+            rest = sumGrades % 10;
+            sumGrades /= 10;
+            System.out.print("Week " + i + " ");
+            while (rest-- > 0)
+                System.out.print("=");
+            System.out.println(">");
+        }
+    }
 }
 
