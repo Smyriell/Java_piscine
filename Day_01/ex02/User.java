@@ -27,12 +27,9 @@ public class User {
         return userId;
     }
 
-    public void printUserData() {
-        System.out.println("************************************");
-        System.out.println("User Info\n" + "User ID: " +
-                getUserId() + "\nUser name: " + getUserName() +
-                "\nBalance: " + getBalance());
-        System.out.println("************************************");
+    public String toString() {
+        return ("\n****************\n" + "User ID: " + getUserId() + "\nUser name: " + getUserName() +
+                "\nBalance: " + getBalance() + "\n****************\n");
     }
 
     public void setIncome(int amount) {
@@ -51,4 +48,6 @@ public class User {
         System.out.println(message);
         System.exit(-1);
     }
+
+
 }
