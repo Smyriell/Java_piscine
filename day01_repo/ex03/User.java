@@ -5,6 +5,7 @@ public class User {
     private int     userId;
     private String  userName;
     private long    userBalance;
+    private TransactionsList transList;
 
     public User(String name, long balance) {
         this.userName = name;

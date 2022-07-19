@@ -1,6 +1,6 @@
 package ex02;
 
-interface UsersList {
+public interface UsersList {
 
     public void addUser(User newUser);
     public User retrieveUserByID(int id);
