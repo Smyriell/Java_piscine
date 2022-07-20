@@ -1,4 +1,4 @@
-package ex01;
+package ex04;
 
 public class UserIdsGenerator {
 

@@ -27,5 +27,7 @@ public class Program {
         one.printUserData();
         two.printUserData();
         System.out.println();
+
+        User three = new User("John", -50);
     }
 }

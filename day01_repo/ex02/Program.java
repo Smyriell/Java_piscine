@@ -26,14 +26,23 @@ public class Program {
         System.out.println();
         System.out.println("retrieveUserByIndex result: \n" + all.retrieveUserByIndex(1).toString());
         System.out.println();
-        System.out.println("Exceptions:\n");
-        all.addUser(one);
-        all.retrieveUserByID(4);
-        all.retrieveUserByIndex(6);
-
-
-
-
-
+        try {
+            System.out.println("______Exceptions:______\n");
+            all.addUser(one);
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("______");
+        try {
+            all.retrieveUserByID(4);
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("______");
+        try {
+            all.retrieveUserByIndex(6);
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

@@ -9,24 +9,24 @@ public class User {
     private long    userBalance;
 
     public User(String name, long balance) {
-        userName = name;
+        this.userName = name;
         if (balance > 0)
-            userBalance = balance;
+            this.userBalance = balance;
         else
             printError("Initial user balance cannot be negative");
-        userId = ++globalId;
+        this.userId = ++globalId;
     }
 
     public String getUserName() {
-        return userName;
+        return this.userName;
     }
 
     public long getBalance() {
-        return userBalance;
+        return this.userBalance;
     }
 
     public int getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public void printUserData() {
@@ -40,12 +40,12 @@ public class User {
     @Override
     public String toString() {
         return "User{ id=" + userId +
-                ", name='" + userName + "\'" +
+                ", name='" + userName + "'" +
                 ", balance=" + userBalance + " }";
     }
 
     public void setIncome(long amount) {
-        userBalance += amount;
+        this.userBalance += amount;
     }
 
     public void setOutcome(long amount) {
@@ -53,11 +53,11 @@ public class User {
             printError("User " + getUserName() + " (User ID: " +
                     getUserId() + ") does not have enough balance for this transaction");
         }
-        userBalance += amount;
+        this.userBalance += amount;
     }
 
     public static void printError (String message) {
-        System.out.println(message);
+        System.err.println(message);
         System.exit(-1);
     }
 }

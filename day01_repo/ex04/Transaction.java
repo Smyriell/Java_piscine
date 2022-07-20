@@ -1,4 +1,4 @@
-package ex00;
+package ex04;
 
 import java.util.UUID;
 
@@ -10,17 +10,17 @@ enum Category
 
 public class Transaction {
 
-    private UUID        transID;
-    private User        recipient;
-    private User        sender;
-    private Category    transCategory;
+    private UUID transID;
+    private User recipient;
+    private User sender;
+    private Category transCategory;
     private long        transAmount;
 
-    public Transaction(User userOne, User userTwo, Category category, long amount) {
-        this.transID = UUID.randomUUID();
+    public Transaction(UUID id, User one, User two, Category category, long amount) {
+        this.transID = id;
         this.transCategory = category;
-        cmpUsersID(userOne, userTwo);
-        fillRecipientAndSender(userOne, userTwo,category, amount);
+        cmpUsersID(one, two);
+        fillRecipientAndSender(one, two, category, amount);
         this.transAmount = amount;
     }
 
@@ -59,27 +59,38 @@ public class Transaction {
         }
     }
 
-    private void fillRecipientAndSender(User userOne, User userTwo, Category category, long amount) {
+    private void fillRecipientAndSender(User one, User two, Category category, long amount) {
         if (transCategory == Category.INCOME) {
             if (amount > 0) {
-                this.recipient = userOne;
-                recipient.setIncome(amount);
-                this.sender = userTwo;
-                sender.setOutcome(-amount);
+                this.recipient = one;
+                this.sender = two;
             } else {
                 printError("Income transaction amount can be just a positive number");
             }
         }
         if (transCategory == Category.OUTCOME) {
             if (amount < 0) {
-                this.recipient = userTwo;
-                recipient.setIncome(-amount);
-                this.sender = userOne;
-                sender.setOutcome(amount);
+                this.recipient = two;
+                this.sender = one;
             } else {
                 printError("Outcome transaction amount can be just a negative number");
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        String str = "Transaction{ ";
+
+        if (this.transCategory == Category.INCOME) {
+            str += this.recipient.getUserName() + " -> " + this.sender.getUserName() + ", +"
+                    + this.transAmount + ", INCOME, " + this.transID + " }";
+        } else {
+            str += this.sender.getUserName() + " -> " + this.recipient.getUserName() + ", "
+                    + this.transAmount + ", OUTCOME, " + this.transID + " }";
+        }
+
+        return str;
     }
 
     public static void printError (String message) {

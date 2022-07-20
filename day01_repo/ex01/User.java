@@ -16,15 +16,15 @@ public class User {
     }
 
     public String getUserName() {
-        return userName;
+        return this.userName;
     }
 
     public long getBalance() {
-        return userBalance;
+        return this.userBalance;
     }
 
     public int getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public void printUserData() {
@@ -37,9 +37,9 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{ id=" + this.userId +
-                ", name='" + this.userName + "\'" +
-                ", balance=" + this.userBalance + " }";
+        return "User{ id=" + userId +
+                ", name='" + userName + "'" +
+                ", balance=" + userBalance + " }";
     }
 
     public void setIncome(long amount) {
@@ -55,7 +55,7 @@ public class User {
     }
 
     public static void printError (String message) {
-        System.out.println(message);
+        System.err.println(message);
         System.exit(-1);
     }
 }

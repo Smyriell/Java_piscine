@@ -1,6 +1,7 @@
 package ex02;
 
 public class UserIdsGenerator {
+
     private static UserIdsGenerator usersIdsGenerator;
     private static int globalUserId = 0;
 

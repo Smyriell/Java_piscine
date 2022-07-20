@@ -17,31 +17,31 @@ public class Transaction {
     private long        transAmount;
 
     public Transaction(User userOne, User userTwo, Category category, long amount) {
-        transID = UUID.randomUUID();
-        transCategory = category;
+        this.transID = UUID.randomUUID();
+        this.transCategory = category;
         cmpUsersID(userOne, userTwo);
         fillRecipientAndSender(userOne, userTwo, category, amount);
-        transAmount = amount;
+        this.transAmount = amount;
     }
 
     public UUID getTransId() {
-        return transID;
+        return this.transID;
     }
 
     public User getRecipient() {
-        return recipient;
+        return this.recipient;
     }
 
     public User getSender() {
-        return sender;
+        return this.sender;
     }
 
     public Category getCategory() {
-        return transCategory;
+        return this.transCategory;
     }
 
     public long getAmount() {
-        return transAmount;
+        return this.transAmount;
     }
 
     public void printTransactionInfo() {
@@ -83,7 +83,7 @@ public class Transaction {
     }
 
     public static void printError (String message) {
-        System.out.println(message);
+        System.err.println(message);
         System.exit(-1);
     }
 }

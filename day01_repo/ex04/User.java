@@ -1,11 +1,11 @@
-package ex03;
+package ex04;
 
 public class User {
 
     private int                 userId;
     private String              userName;
     private long                userBalance;
-    private TransactionsList    transList;
+    private TransactionsList transList;
 
     public User(String name, long balance) {
         this.userName = name;
@@ -57,6 +57,10 @@ public class User {
             printError("User " + getUserName() + " (User ID: " +
                     getUserId() + ") does not have enough balance for this transaction");
         }
+        this.userBalance += amount;
+    }
+
+    public void setUserBalance(long amount) {
         this.userBalance += amount;
     }
 
