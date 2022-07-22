@@ -6,12 +6,15 @@ public class Program {
     private static int counter;
 
     public static void validateArgs(String[] args) {
+        if (args.length != NUMB_OF_ARGS) {
+            printError("There should be one argument: --count=%d");
+        }
 
         if (args[0].matches("--count=\\d+")) {
             String[] str = args[0].split("=");
             counter = Integer.parseInt(str[1]);
         } else {
-            printError("Invalid argument");
+            printError("Invalid argument format");
         }
     }
 
@@ -21,21 +24,20 @@ public class Program {
     }
 
     public static void main(String[] args) {
-        if (args.length != NUMB_OF_ARGS)
-            printError("There should be one argument: --count=/d");
-
-        validateArgs(args);
-
-        MyThread henThread = new MyThread("Hen", counter);
-        MyThread eggThread = new MyThread("Egg", counter);
-
-        eggThread.start();
-        henThread.start();
-
         try {
+            validateArgs(args);
+
+            MyThread henThread = new MyThread("Hen", counter);
+            MyThread eggThread = new MyThread("Egg", counter);
+
+            eggThread.start();
+            henThread.start();
+
             henThread.join();
             eggThread.join();
-        } catch (InterruptedException e) {
+        } catch (NumberFormatException e) {
+            printError("Invalid argument format");
+        } catch (InterruptedException | IllegalThreadStateException e) {
             printError(e.getMessage());
         }
 

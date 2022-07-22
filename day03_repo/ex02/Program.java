@@ -16,6 +16,10 @@ public class Program {
     public static void validateArgs(String[] args) {
         String[] str;
 
+        if (args.length != NUMB_OF_ARGS ) {
+            printError("There should be two arguments: --arraySize=%d --threadsCount=%d");
+        }
+
         for (int i = 0; i < NUMB_OF_ARGS; i++) {
             if (i == 0 && args[i].matches("--arraySize=\\d+")) {
                 str = args[i].split("=");
@@ -24,13 +28,13 @@ public class Program {
                 str = args[i].split("=");
                 threadsNumb = Integer.parseInt(str[1]);
             } else {
-                printError("Invalid argument");
+                printError("Invalid argument format");
             }
         }
 
         if (arrLen > 2000000 || threadsNumb < 1 || threadsNumb > arrLen) {
             printError("Not valid data. Max size of array <= 2_000_000, Max number of threads is no\n" +
-                    "greater than size of array");
+                    "greater than size of array and not less than 1");
         }
     }
 
@@ -96,14 +100,17 @@ public class Program {
     }
 
     public static void main(String[] args) {
-        if (args.length != NUMB_OF_ARGS )
-            printError("There should be two arguments: --arraySize=/d --threadsCount=/d");
-
-        validateArgs(args);
-        fillArray();
-        getPrintChecksum();
-        fillThreads();
-        runThreads();
+        try {
+            validateArgs(args);
+            fillArray();
+            getPrintChecksum();
+            fillThreads();
+            runThreads();
+        } catch (NumberFormatException e) {
+            printError("Invalid argument format");
+        } catch (IllegalThreadStateException e) {
+            printError(e.getMessage());
+        }
 
         System.out.println("Sum by threads: " + action.getSumByThreads());
     }

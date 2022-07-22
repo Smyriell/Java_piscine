@@ -5,27 +5,23 @@ public class Action {
     private static boolean status = true;
 
     public synchronized void  printMessage(Type activeThread, String message ) {
+        try {
             if (activeThread == Type.PRODUCER) {
                 while (!status) {
-                    try {
-                        wait();
-                    } catch (InterruptedException e) {
-                        printError(e.getMessage());
-                    }
+                    wait();
                 }
                 status = false;
             } else {
                 while (status) {
-                    try {
-                        wait();
-                    } catch (InterruptedException e) {
-                        printError(e.getMessage());
-                    }
+                    wait();
                 }
                 status = true;
             }
             System.out.println(message);
             notify();
+        } catch (InterruptedException | IllegalThreadStateException e ) {
+            printError(e.getMessage());
+        }
     }
 
     public static void printError(String message) {
