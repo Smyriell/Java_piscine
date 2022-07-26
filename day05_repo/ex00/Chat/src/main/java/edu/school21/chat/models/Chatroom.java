@@ -53,10 +53,13 @@ public class Chatroom {
         if (this == o) {
             return true;
         }
+
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+
         Chatroom chatroom = (Chatroom) o;
+
         return id == chatroom.id && Objects.equals(name, chatroom.name) && Objects.equals(owner, chatroom.owner)
                 && Objects.equals(allMessages, chatroom.allMessages);
     }

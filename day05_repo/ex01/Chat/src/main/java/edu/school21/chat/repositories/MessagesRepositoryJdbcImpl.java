@@ -25,18 +25,25 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
         try (Connection myConnection = dataSource.getConnection();
              Statement myStatement = myConnection.createStatement()) {
             ResultSet myResSet = myStatement.executeQuery(mesQuery);
+
             if (!myResSet.next()) {
-                return null;
+                return Optional.empty();
             }
-            Long userId = myResSet.getLong(2);
-            Long roomId = myResSet.getLong(3);
+
+            Long userId = myResSet.getLong("author");
+            Long roomId = myResSet.getLong("room");
+
             User user = findUser(userId);
             Chatroom room = findChat(roomId);
-            return Optional.of(new Message(myResSet.getLong(1), user, room,
-                    myResSet.getString(4), myResSet.getTimestamp(5).toLocalDateTime()));
-        } catch (SQLException e) {
+
+            Message message = new Message(myResSet.getLong("id"), user, room,
+                    myResSet.getString("text"), myResSet.getTimestamp("localdatetime").toLocalDateTime());
+
+            return Optional.of(message);
+        } catch (NumberFormatException | SQLException e) {
             System.err.println(e.getMessage());
         }
+
         return Optional.empty();
     }
 
@@ -50,7 +57,8 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
             if (!resSet.next()) {
                 return null;
             }
-            return new Chatroom(roomId, resSet.getString(2));
+
+            return new Chatroom(roomId, resSet.getString("name"));
         }
     }
 
@@ -64,7 +72,8 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
             if (!resSet.next()) {
                 return null;
             }
-            return new User(userId, resSet.getString(2), resSet.getString(3));
+
+            return new User(userId, resSet.getString("name"), resSet.getString("password"));
         }
     }
 }
