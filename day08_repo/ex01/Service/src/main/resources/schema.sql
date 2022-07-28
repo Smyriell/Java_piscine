@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS service.users;
+
+CREATE SCHEMA IF NOT EXISTS service;
+
+CREATE TABLE IF NOT EXISTS service.users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(30) NOT NULL UNIQUE
+);
