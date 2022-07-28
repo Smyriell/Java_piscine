@@ -82,7 +82,6 @@ public class ProductsRepositoryJdbcImpl implements ProductsRepository {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-
     }
 
     @Override
@@ -103,7 +102,6 @@ public class ProductsRepositoryJdbcImpl implements ProductsRepository {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-
     }
 
     @Override
@@ -122,6 +120,5 @@ public class ProductsRepositoryJdbcImpl implements ProductsRepository {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-
     }
 }
