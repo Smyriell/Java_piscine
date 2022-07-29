@@ -1,8 +1,11 @@
 package school21.spring.service.repositories;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import school21.spring.service.application.Main;
 import school21.spring.service.models.User;
 
@@ -12,17 +15,23 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Component("jdbcTemplate")
 public class UsersRepositoryJdbcTemplateImpl implements UsersRepository {
+
     private final JdbcTemplate jdbcTemplateObject;
 
-    public UsersRepositoryJdbcTemplateImpl(DataSource dataSource) {
+    @Autowired
+    public UsersRepositoryJdbcTemplateImpl(@Qualifier("hikariDataSource")DataSource dataSource) {
         this.jdbcTemplateObject = new JdbcTemplate(dataSource);
     }
 
     private static final class UserMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-            User user = new User(resultSet.getLong("id"), resultSet.getString("email"));
+            User user = new User();
+            user.setIdentifier(resultSet.getLong("id"));
+            user.setEmail(resultSet.getString("email"));
+            user.setPassword(resultSet.getString("password"));
 
             return user;
         }
@@ -81,8 +90,8 @@ public class UsersRepositoryJdbcTemplateImpl implements UsersRepository {
             return;
         }
 
-        String query = "INSERT INTO " + Main.SCHEMA_NAME + "." + Main.TABLE_NAME + " (email) VALUES (?)";
-        jdbcTemplateObject.update(query, newUser.getEmail());
+        String query = "INSERT INTO " + Main.SCHEMA_NAME + "." + Main.TABLE_NAME + " (email, password) VALUES (?, ?)";
+        jdbcTemplateObject.update(query, newUser.getEmail(), newUser.getPassword());
         Optional<User> user = findByEmail(newUser.getEmail());
 
         if (user.isPresent()) {

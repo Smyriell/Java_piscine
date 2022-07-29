@@ -1,5 +1,8 @@
 package school21.spring.service.repositories;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import school21.spring.service.application.Main;
 import school21.spring.service.models.User;
 
@@ -9,10 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Component("jdbc")
 public class UsersRepositoryJdbcImpl implements UsersRepository {
     private final Connection connection;
 
-    public UsersRepositoryJdbcImpl(DataSource dataSource) throws SQLException {
+    @Autowired
+    public UsersRepositoryJdbcImpl(@Qualifier("driverManagerDataSource")DataSource dataSource) throws SQLException {
         this.connection = dataSource.getConnection();
     }
 
@@ -33,7 +38,7 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
                 return null;
             }
 
-            foundUser = new User(id, resSet.getString("email"));
+            foundUser = new User(id, resSet.getString("email"), resSet.getString("password"));
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -48,7 +53,7 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
             ResultSet resSet = statement.executeQuery("SELECT * FROM " + Main.SCHEMA_NAME + "." + Main.TABLE_NAME);
 
             while(resSet.next()) {
-                userList.add(new User(resSet.getLong(1), resSet.getString(2)));
+                userList.add(new User(resSet.getLong(1), resSet.getString(2), resSet.getString(3)));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -74,7 +79,7 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
                 return Optional.empty();
             }
 
-            User foundUser = new User(resSet.getLong(1), email);
+            User foundUser = new User(resSet.getLong("id"), email, resSet.getString("password"));
 
             return Optional.of(foundUser);
 
@@ -94,10 +99,11 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
             return;
         }
 
-        String query = "INSERT INTO " + Main.SCHEMA_NAME + "." + Main.TABLE_NAME + " (email) VALUES (?)";
+        String query = "INSERT INTO " + Main.SCHEMA_NAME + "." + Main.TABLE_NAME + " (email, password) VALUES (?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, newUser.getEmail());
+            statement.setString(2, newUser.getPassword());
             statement.execute();
             ResultSet key = statement.getGeneratedKeys();
             key.next();
