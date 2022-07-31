@@ -1,0 +1,10 @@
+DROP SCHEMA IF EXISTS service CASCADE;
+
+CREATE SCHEMA IF NOT EXISTS service;
+
+CREATE TABLE IF NOT EXISTS service.users
+(
+    id       SERIAL PRIMARY KEY,
+    name     VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(100)
+);

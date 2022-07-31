@@ -17,9 +17,10 @@ public class UsersServiceImpl implements UsersService {
     private MessagesRepository messagesRepository;
 
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder) {
+    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, MessagesRepository messagesRepository) {
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
+        this.messagesRepository = messagesRepository;
     }
 
     @Override

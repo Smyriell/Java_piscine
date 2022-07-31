@@ -25,7 +25,9 @@ public class Main {
     public static void main(String[] args) {
         try {
             int port = getPort(args);
+
             Client client = new Client(IP_NUMB, port);
+
             client.start();
         } catch (NumberFormatException | IOException e) {
             System.out.println(e.getMessage());

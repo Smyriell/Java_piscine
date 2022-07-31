@@ -3,6 +3,7 @@ package edu.school21.sockets.server;
 import edu.school21.sockets.models.User;
 import edu.school21.sockets.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class Server {
     private UsersService usersService;
     private ServerSocket serverSocket;
     private List<Client> clientsList = new ArrayList<>();
+    private int num = 1;
 
     @Autowired
     public Server(UsersService usersService) {
@@ -47,36 +49,42 @@ public class Server {
             writer.println("Hello from Server!");
 
             while (true) {
-                writer.println("Available commands:\nsignUp\nsignIn\nexit");
+                writer.println("Available commands:\nsignUp, signIn, exit");
 
                 try {
                     if (reader.hasNextLine()) {
                         String message = reader.nextLine().trim();
 
-                        if (message.equals("signUp")) {
+                        if ("signUp".equalsIgnoreCase(message)) {
                             if (!acceptUser()) {
                                 exitChat();
                                 break;
                             }
 
                             usersService.signUp(new User(username, password));
-
-                        } else if (message.equals("signIn")) {
+                            writer.println("User: " + username + " was successfully created!");
+                            System.out.println("User: " + username + " was added");
+//                        } else if (message.equals("signIn")) {
+                        } else if ("signIn".equalsIgnoreCase(message)) {
                             if (!acceptUser()) {
                                 exitChat();
                                 break;
                             }
 
                             if (usersService.signIn(username, password)) {
+                                writer.println("Authorization successful!");
+                                System.out.println("Authorization successful for user: " + username);
                                 writer.println("Start messaging");
                                 talk();
                                 break;
                             } else {
                                 writer.println("Authorization failed!");
+                                System.out.println("Authorization for user: " + username + " failed");
                             }
-                        } else if (message.equals("")) {
+
+                        } else if ("".equals(message)) {
                             continue;
-                        } else if (message.equals("exit")) {
+                        } else if ("exit".equals(message)) {
                             exitChat();
                             break;
                         } else {
@@ -101,6 +109,7 @@ public class Server {
             if (username.equals("exit")) {
                 return false;
             }
+
             writer.println("Enter password: ");
             password = reader.nextLine().trim();
 
@@ -120,7 +129,10 @@ public class Server {
                 String message = reader.nextLine().trim();
 
                 if (message.equals("exit")) {
+                    String leavingUserName = this.username;
                     exitChat();
+                    clientsList.stream().filter(client -> client.isClientActive).forEach(client ->
+                            client.writer.println("User " + leavingUserName + " left us"));
                     break;
                 }
                 sendMessageToClients(username + ": " + message);
@@ -129,7 +141,7 @@ public class Server {
 
         private void exitChat() {
             try {
-                writer.println("Exit");
+                writer.println("You left the chat. Bye-bye!");
                 removeClient(this);
                 reader.close();
                 writer.close();
@@ -151,6 +163,7 @@ public class Server {
                 Socket socket = serverSocket.accept();
                 Client client = new Client(socket);
                 clientsList.add(client);
+                System.out.println("New client connected! Number of clients: " + num++);
                 client.start();
             }
         } catch (IllegalThreadStateException | NumberFormatException | IOException e) {
@@ -171,7 +184,7 @@ public class Server {
 
     private void removeClient(Client client) {
         clientsList.remove(client);
-        System.out.println("The user left us...");
+        System.out.println("The user " + client.username + " left chat");
 
         if (clientsList.isEmpty()) {
             System.out.println("No users in the Chat! Bye-bye!");

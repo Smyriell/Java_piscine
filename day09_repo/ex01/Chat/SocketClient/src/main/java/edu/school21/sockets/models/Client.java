@@ -16,11 +16,37 @@ public class Client {
         writer = new PrintWriter(socket.getOutputStream(), true);
     }
 
-    private class ReadingThread extends Thread {
+    public void start() {
+        WritingThread writingThread = new WritingThread(writer);
+        ReadFromServer readingThread = new ReadFromServer(reader, writingThread);
+
+        readingThread.start();
+        writingThread.start();
+
+        try {
+            readingThread.join();
+            writingThread.join();
+
+            stop();
+        } catch (InterruptedException | IllegalThreadStateException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void stop() {
+        try {
+            socket.close();
+        } catch (IllegalThreadStateException | IOException e) {
+            System.out.println(e.getMessage());
+        }
+        System.exit(0);
+    }
+
+    private class ReadFromServer extends Thread {
         WritingThread writingThread;
         private Scanner reader;
 
-        public ReadingThread(Scanner reader, WritingThread writingThread) {
+        public ReadFromServer(Scanner reader, WritingThread writingThread) {
             this.reader = reader;
             this.writingThread = writingThread;
         }
@@ -35,14 +61,15 @@ public class Client {
         }
 
         private void receiveData() throws IOException {
+            String message;
             while (reader.hasNextLine()) {
-                String message = reader.nextLine();
+                message = reader.nextLine();
                 System.out.println(message);
 
-                if (null != message && message.equals("exit")) {
+                if ("exit".equals(message)) {
                     reader.close();
                     writingThread.isTyping = false;
-                    break;
+                    return;
                 }
             }
         }
@@ -71,47 +98,12 @@ public class Client {
                 String message = scanner.nextLine();
                 writer.println(message);
 
-                if (null != message && message.equals("exit")) {
+                if ("exit".equals(message)) {
+                    System.out.println("You left the chat. Bye-bye!");
                     System.exit(0);
                 }
             }
             writer.close();
         }
-    }
-
-    public void start() {
-        WritingThread writingThread = new WritingThread(writer);
-        ReadingThread readingThread = new ReadingThread(reader, writingThread);
-
-        writingThread.start();
-        readingThread.start();
-
-        try {
-            readingThread.join();
-            writingThread.join();
-            stop();
-        } catch (InterruptedException | IllegalThreadStateException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private void stop() {
-        try {
-            if (socket != null) {
-                socket.close();
-            }
-
-            if (reader != null) {
-                reader.close();
-            }
-
-            if (writer != null) {
-                writer.close();
-            }
-
-        } catch (IllegalThreadStateException | IOException e) {
-            System.out.println(e.getMessage());
-        }
-        System.exit(0);
     }
 }

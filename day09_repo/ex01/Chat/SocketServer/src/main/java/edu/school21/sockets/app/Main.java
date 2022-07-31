@@ -31,6 +31,7 @@ public class Main {
             ApplicationContext context = new AnnotationConfigApplicationContext("edu.school21.sockets");
 
             Server server = context.getBean(Server.class);
+
             server.start(port);
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
